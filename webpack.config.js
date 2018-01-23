@@ -1,6 +1,6 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+// const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 // const ExtractTextPlugin = require("extract-text-webpack-plugin")
 
 module.exports = {
@@ -36,6 +36,11 @@ module.exports = {
     // This is important because it allows us to avoid bundling all of our
     // dependencies, which allows browsers to cache those libraries between builds.
     externals: {
+        'react': 'React',
+        'react-dom': 'ReactDOM',
+        'ipfs': 'Ipfs',
+        // reactDOM: 'react-dom',
+        // Ipfs: 'ipfs',
     },
     node: {
         fs: 'empty',
@@ -44,7 +49,8 @@ module.exports = {
     },
     plugins: [
         // new UglifyJsPlugin(),
-        new HtmlWebpackPlugin({ title: "디지도장", inject: "head" }),
+        // new HtmlWebpackPlugin({ title: "디지도장", inject: "head" }),
+        // new CDNWebpackPlugin(config.build.cdn),
         // new ExtractTextPlugin("styles.css")
     ]
 };

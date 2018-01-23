@@ -41,7 +41,7 @@ export class Dojang extends React.Component<DojangProps, DojangState> {
             this.setState({ id: "Waiting..." });
             this.ipfs.id({}, this.ipfsId.bind(this));
         }
-        this.ipfs.files.add(Buffer.from("This is a test file."), this.ipfsFileAdd.bind(this));
+        this.ipfs.files.add(Buffer.from("This is a test file. Cats are wonderful, I want a cat."), this.ipfsFileAdd.bind(this));
     }
 
     private ipfsId(error: Error, res: Ipfs.Id) {

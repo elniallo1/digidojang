@@ -6,6 +6,7 @@
   "scripts": {
     "keys": "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt -subj '/'",
     "build": "./node_modules/.bin/webpack",
+    "build:live": "./node_modules/.bin/nodemon -e ts,tsx,js,jsx --watch ./src --exec npm run build",
     "start": "./node_modules/.bin/ts-node server.ts"
   },
   "author": "",
@@ -21,6 +22,7 @@
     "express": "^4.16.2",
     "html-webpack-plugin": "^2.30.1",
     "ipfs": "^0.27.7",
+    "nodemon": "^1.14.11",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "source-map-loader": "^0.2.3",

@@ -1,12 +1,13 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const path = require('path')
 // const ExtractTextPlugin = require("extract-text-webpack-plugin")
 
 module.exports = {
     entry: "./src/index.tsx",
     output: {
         filename: "dojang.js",
-        path: __dirname + "/webdist/"
+        path: path.join(__dirname, "webdist")
     },
 
     // Enable sourcemaps for debugging webpack's output.
@@ -24,7 +25,9 @@ module.exports = {
             { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
 
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
+            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
+            { test: /\.js$/, loaders: [/*'react-hot-loader', */'babel-loader'], include: path.join(__dirname, 'src') },
+            { test: /\.json$/, loader: 'json-loader' }
         ]
     },
 
@@ -34,9 +37,14 @@ module.exports = {
     // dependencies, which allows browsers to cache those libraries between builds.
     externals: {
     },
+    node: {
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty'
+    },
     plugins: [
-        new UglifyJsPlugin(),
-        new HtmlWebpackPlugin({title: "디지도장", inject: "head"}),
+        // new UglifyJsPlugin(),
+        new HtmlWebpackPlugin({ title: "디지도장", inject: "head" }),
         // new ExtractTextPlugin("styles.css")
     ]
 };

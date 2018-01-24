@@ -1,6 +1,7 @@
 import * as Ipfs from "ipfs";
 import * as React from "react";
 import { Camera } from "./camera";
+import { Verify } from "./verify";
 
 // tslint:disable:interface-name no-empty-interface
 interface DojangProps { }

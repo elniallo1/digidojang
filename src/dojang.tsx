@@ -29,7 +29,7 @@ export class Dojang extends React.Component<DojangProps, DojangState> {
                 <h1>Test</h1>
                 {this.state.id === undefined ? <div>Connecting...</div> : <div>IPFS ID: {this.state.id}</div>}
                 {this.state.files.map((file) => <div>File Hash: {file.hash}</div>)}
-                <Camera />
+                <Camera ipfs={this.ipfs} />
             </div>
         );
 

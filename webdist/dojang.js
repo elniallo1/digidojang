@@ -5403,7 +5403,7 @@ var elliptic = exports;
 elliptic.version = __webpack_require__(126).version;
 elliptic.utils = __webpack_require__(127);
 elliptic.rand = __webpack_require__(59);
-elliptic.curve = __webpack_require__(23);
+elliptic.curve = __webpack_require__(24);
 elliptic.curves = __webpack_require__(132);
 
 // Protocols
@@ -5910,7 +5910,7 @@ process.umask = function() { return 0; };
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(1).Buffer
-var Transform = __webpack_require__(19).Transform
+var Transform = __webpack_require__(20).Transform
 var StringDecoder = __webpack_require__(31).StringDecoder
 var inherits = __webpack_require__(0)
 
@@ -6045,7 +6045,7 @@ module.exports = CipherBase
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(20);
+var processNextTick = __webpack_require__(21);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -6592,6 +6592,12 @@ base.Node = __webpack_require__(152);
 
 /***/ }),
 /* 19 */
+/***/ (function(module, exports) {
+
+module.exports = React;
+
+/***/ }),
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -6724,7 +6730,7 @@ Stream.prototype.pipe = function(dest, options) {
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6775,7 +6781,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(1).Buffer
@@ -6826,7 +6832,7 @@ module.exports = EVP_BytesToKey
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // based on the aes implimentation in triple sec
@@ -7060,7 +7066,7 @@ module.exports.AES = AES
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7075,7 +7081,7 @@ curve.edwards = __webpack_require__(131);
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var asn1 = __webpack_require__(147)
@@ -7186,12 +7192,6 @@ function decrypt (data, password) {
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).Buffer))
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports) {
-
-module.exports = React;
 
 /***/ }),
 /* 26 */
@@ -8005,7 +8005,7 @@ exports.PassThrough = __webpack_require__(87);
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(20);
+var processNextTick = __webpack_require__(21);
 /*</replacement>*/
 
 module.exports = Writable;
@@ -9211,7 +9211,7 @@ exports.constants = {
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(20);
+var processNextTick = __webpack_require__(21);
 /*</replacement>*/
 
 module.exports = Readable;
@@ -10211,7 +10211,7 @@ module.exports = __webpack_require__(28).EventEmitter;
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(20);
+var processNextTick = __webpack_require__(21);
 /*</replacement>*/
 
 // undocumented cb() API, needed for core, not for public API
@@ -11207,7 +11207,7 @@ module.exports = {"aes-128-ecb":{"cipher":"AES","key":128,"iv":0,"mode":"ECB","t
 /* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var aes = __webpack_require__(22)
+var aes = __webpack_require__(23)
 var Buffer = __webpack_require__(1).Buffer
 var Transform = __webpack_require__(9)
 var inherits = __webpack_require__(0)
@@ -11330,7 +11330,7 @@ module.exports = StreamCipher
 /* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var aes = __webpack_require__(22)
+var aes = __webpack_require__(23)
 var Buffer = __webpack_require__(1).Buffer
 var Transform = __webpack_require__(9)
 var inherits = __webpack_require__(0)
@@ -13074,7 +13074,7 @@ module.exports = withPublic;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(25);
+const React = __webpack_require__(19);
 const ReactDOM = __webpack_require__(73);
 const dojang_1 = __webpack_require__(74);
 window.onload = (e) => {
@@ -13096,8 +13096,9 @@ module.exports = ReactDOM;
 /* WEBPACK VAR INJECTION */(function(Buffer) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Ipfs = __webpack_require__(77);
-const React = __webpack_require__(25);
+const React = __webpack_require__(19);
 const camera_1 = __webpack_require__(78);
+const verify_1 = __webpack_require__(167);
 // tslint:enable:interface-name no-empty-interface
 class Dojang extends React.Component {
     constructor(props) {
@@ -13117,14 +13118,15 @@ class Dojang extends React.Component {
             this.state.files.map((file) => React.createElement("div", null,
                 "File Hash: ",
                 file.hash)),
-            React.createElement(camera_1.Camera, { ipfs: this.ipfs })));
+            React.createElement(camera_1.Camera, { ipfs: this.ipfs }),
+            React.createElement(verify_1.Verify, { ipfs: this.ipfs })));
     }
     ipfsReady() {
         if (this.ipfs !== undefined) {
             this.setState({ id: "Waiting..." });
             this.ipfs.id({}, this.ipfsId.bind(this));
+            this.ipfs.files.add(Buffer.from("This is a test file."), this.ipfsFileAdd.bind(this));
         }
-        this.ipfs.files.add(Buffer.from("This is a test file."), this.ipfsFileAdd.bind(this));
     }
     ipfsId(error, res) {
         if (error) {
@@ -13387,11 +13389,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(25);
+const React = __webpack_require__(19);
 // tslint:enable:interface-name no-empty-interface
-var toBuffer = __webpack_require__(79);
-var crypto2 = __webpack_require__(39);
-var crypto = __webpack_require__(39), algorithm = 'aes-256-ctr', password = 'd6F3Efeq';
+const toBuffer = __webpack_require__(79);
+const crypto2 = __webpack_require__(39);
+const crypto = __webpack_require__(39);
+const algorithm = "aes-256-ctr";
+const password = "d6F3Efeq";
 class Camera extends React.Component {
     constructor(props) {
         super(props);
@@ -13428,7 +13432,7 @@ class Camera extends React.Component {
     send() {
         if (this.blob !== undefined) {
             console.log("rblob defined");
-            let buffer = toBuffer(this.blob, this.processBuffer.bind(this));
+            const buffer = toBuffer(this.blob, this.processBuffer.bind(this));
         }
         else {
             console.log("this.state.fileToSend is undefined");
@@ -13461,29 +13465,33 @@ class Camera extends React.Component {
     }
     processBuffer(error, buffer) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (error)
+            if (error) {
                 throw error;
-            console.log('Buffer : ');
+            }
+            console.log("Buffer: ");
             console.log(buffer);
-            var encrypted = encrypt(buffer);
+            const encrypted = encrypt(buffer);
             console.log(decrypt(encrypted));
-            var abc = crypto.createHash('sha256').update(encrypted).digest('hex');
+            const abc = crypto.createHash("sha256").update(encrypted).digest();
+            const sign = crypto.createSign("SHA256");
+            sign.update(encrypted);
+            sign.sign();
             console.log(abc);
-            //send abc to ipfs
-            let hash = yield this.ipfs.files.add(encrypted);
+            // send abc to ipfs
+            const hash = yield this.ipfs.files.add(encrypted);
             this.setState({ fileHash: hash });
         });
     }
 }
 exports.Camera = Camera;
 function encrypt(buffer) {
-    var cipher = crypto.createCipher(algorithm, password);
-    var crypted = Buffer.concat([cipher.update(buffer), cipher.final()]);
+    const cipher = crypto.createCipher(algorithm, password);
+    const crypted = Buffer.concat([cipher.update(buffer), cipher.final()]);
     return crypted;
 }
 function decrypt(buffer) {
-    var decipher = crypto.createDecipher(algorithm, password);
-    var dec = Buffer.concat([decipher.update(buffer), decipher.final()]);
+    const decipher = crypto.createDecipher(algorithm, password);
+    const dec = Buffer.concat([decipher.update(buffer), decipher.final()]);
     return dec;
 }
 
@@ -13561,7 +13569,7 @@ module.exports = function hash (buf, fn) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(Buffer) {
-var Transform = __webpack_require__(19).Transform
+var Transform = __webpack_require__(20).Transform
 var inherits = __webpack_require__(0)
 
 function HashBase (blockSize) {
@@ -14635,7 +14643,7 @@ module.exports = function (password, salt, iterations, keylen, digest, callback)
 /* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ebtk = __webpack_require__(21)
+var ebtk = __webpack_require__(22)
 var aes = __webpack_require__(33)
 var DES = __webpack_require__(111)
 var desModes = __webpack_require__(117)
@@ -14870,7 +14878,7 @@ module.exports = MD5
 "use strict";
 
 var Buffer = __webpack_require__(1).Buffer
-var Transform = __webpack_require__(19).Transform
+var Transform = __webpack_require__(20).Transform
 var inherits = __webpack_require__(0)
 
 function throwIfNotStringOrBuffer (val, prefix) {
@@ -14974,8 +14982,8 @@ var AuthCipher = __webpack_require__(55)
 var Buffer = __webpack_require__(1).Buffer
 var StreamCipher = __webpack_require__(56)
 var Transform = __webpack_require__(9)
-var aes = __webpack_require__(22)
-var ebtk = __webpack_require__(21)
+var aes = __webpack_require__(23)
+var ebtk = __webpack_require__(22)
 var inherits = __webpack_require__(0)
 
 function Cipher (mode, key, iv) {
@@ -15366,8 +15374,8 @@ var Buffer = __webpack_require__(1).Buffer
 var MODES = __webpack_require__(34)
 var StreamCipher = __webpack_require__(56)
 var Transform = __webpack_require__(9)
-var aes = __webpack_require__(22)
-var ebtk = __webpack_require__(21)
+var aes = __webpack_require__(23)
+var ebtk = __webpack_require__(22)
 var inherits = __webpack_require__(0)
 
 function Decipher (mode, key, iv) {
@@ -16530,7 +16538,7 @@ function formatReturnValue(bn, enc) {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(13)
-var stream = __webpack_require__(19)
+var stream = __webpack_require__(20)
 var inherits = __webpack_require__(0)
 var sign = __webpack_require__(125)
 var verify = __webpack_require__(161)
@@ -16632,7 +16640,7 @@ var createHmac = __webpack_require__(46)
 var crt = __webpack_require__(36)
 var EC = __webpack_require__(4).ec
 var BN = __webpack_require__(3)
-var parseKeys = __webpack_require__(24)
+var parseKeys = __webpack_require__(25)
 var curves = __webpack_require__(68)
 
 function sign (hash, key, hashType, signType, tag) {
@@ -17297,7 +17305,7 @@ BasePoint.prototype.dblp = function dblp(k) {
 "use strict";
 
 
-var curve = __webpack_require__(23);
+var curve = __webpack_require__(24);
 var elliptic = __webpack_require__(4);
 var BN = __webpack_require__(3);
 var inherits = __webpack_require__(0);
@@ -18242,7 +18250,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
 "use strict";
 
 
-var curve = __webpack_require__(23);
+var curve = __webpack_require__(24);
 var BN = __webpack_require__(3);
 var inherits = __webpack_require__(0);
 var Base = curve.base;
@@ -18429,7 +18437,7 @@ Point.prototype.getX = function getX() {
 "use strict";
 
 
-var curve = __webpack_require__(23);
+var curve = __webpack_require__(24);
 var elliptic = __webpack_require__(4);
 var BN = __webpack_require__(3);
 var inherits = __webpack_require__(0);
@@ -22558,7 +22566,7 @@ module.exports = {"2.16.840.1.101.3.4.1.1":"aes-128-ecb","2.16.840.1.101.3.4.1.2
 var findProc = /Proc-Type: 4,ENCRYPTED\n\r?DEK-Info: AES-((?:128)|(?:192)|(?:256))-CBC,([0-9A-H]+)\n\r?\n\r?([0-9A-z\n\r\+\/\=]+)\n\r?/m
 var startRegex = /^-----BEGIN ((?:.* KEY)|CERTIFICATE)-----\n/m
 var fullRegex = /^-----BEGIN ((?:.* KEY)|CERTIFICATE)-----\n\r?([0-9A-z\n\r\+\/\=]+)\n\r?-----END \1-----$/m
-var evp = __webpack_require__(21)
+var evp = __webpack_require__(22)
 var ciphers = __webpack_require__(33)
 module.exports = function (okey, password) {
   var key = okey.toString()
@@ -22594,7 +22602,7 @@ module.exports = function (okey, password) {
 /* WEBPACK VAR INJECTION */(function(Buffer) {// much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var BN = __webpack_require__(3)
 var EC = __webpack_require__(4).ec
-var parseKeys = __webpack_require__(24)
+var parseKeys = __webpack_require__(25)
 var curves = __webpack_require__(68)
 
 function verify (sig, hash, key, signType, tag) {
@@ -22825,7 +22833,7 @@ exports.publicDecrypt = function publicDecrypt(key, buf) {
 /* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(24);
+/* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(25);
 var randomBytes = __webpack_require__(11);
 var createHash = __webpack_require__(13);
 var mgf = __webpack_require__(69);
@@ -22926,7 +22934,7 @@ function nonZero(len, crypto) {
 /* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(24);
+/* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(25);
 var mgf = __webpack_require__(69);
 var xor = __webpack_require__(70);
 var bn = __webpack_require__(3);
@@ -23151,6 +23159,63 @@ function randomFillSync (buf, offset, size) {
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)))
+
+/***/ }),
+/* 167 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(19);
+// tslint:enable:interface-name no-empty-interface
+class Verify extends React.Component {
+    constructor(props) {
+        super(props);
+        this.nfc = this.props.nfc;
+        this.state = { nfc: [] };
+    }
+    componentWillMount() {
+        if (this.nfc) {
+            this.nfc.watch(this.nfcWatch.bind(this), { recordType: "text" });
+        }
+    }
+    componentWillUnmount() {
+        if (this.nfc) {
+            this.nfc.cancelWatch();
+        }
+    }
+    render() {
+        return (React.createElement("div", null,
+            this.renderNfcReady(),
+            this.renderNfcStrings()));
+    }
+    renderNfcReady() {
+        if (this.nfc) {
+            return React.createElement("h1", null, "NFC is ready");
+        }
+        else {
+            return React.createElement("h1", null, "NFC is not available");
+        }
+    }
+    renderNfcStrings() {
+        return (React.createElement("ol", null, this.state.nfc.map((s) => (React.createElement("li", null, s)))));
+    }
+    nfcWatch(message) {
+        const strings = [];
+        for (const record of message.records) {
+            if (record.recordType === "text") {
+                strings.push(record.data);
+            }
+        }
+        this.setState({ nfc: strings });
+    }
+    nfcWrite() {
+        console.log(`Wrote '${this.props.ipfsId}' to tag`);
+    }
+}
+exports.Verify = Verify;
+
 
 /***/ })
 /******/ ]);

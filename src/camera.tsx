@@ -1,29 +1,29 @@
-import * as React from "react";
 import * as Ipfs from "ipfs";
-
+import * as React from "react";
 
 // tslint:disable:interface-name no-empty-interface
-interface CameraProps { ipfs: Ipfs }
+interface CameraProps { ipfs: Ipfs; }
 interface CameraState {
     cameraUrl?: string;
     fileHash: Ipfs.IPFSFile[];
 }
 // tslint:enable:interface-name no-empty-interface
 
-var toBuffer = require('blob-to-buffer')
-var crypto2 = require('crypto-browserify')
-var crypto = require('crypto'),
-    algorithm = 'aes-256-ctr',
-    password = 'd6F3Efeq';
+const toBuffer = require("blob-to-buffer");
+const crypto2 = require("crypto-browserify");
+import * as crypto from "crypto";
+
+const algorithm = "aes-256-ctr";
+const password = "d6F3Efeq";
 
 export class Camera extends React.Component<CameraProps, CameraState> {
     public mediaRequested: boolean;
     public ipfs: Ipfs;
-    public blob?: Blob
+    public blob?: Blob;
 
     constructor(props: CameraProps) {
         super(props);
-        this.ipfs = props.ipfs
+        this.ipfs = props.ipfs;
         this.state = { fileHash: [] };
         this.mediaRequested = false;
     }
@@ -69,16 +69,13 @@ export class Camera extends React.Component<CameraProps, CameraState> {
 
     public send() {
         if (this.blob !== undefined) {
-            console.log("rblob defined")
+            console.log("rblob defined");
 
-            let buffer = toBuffer(this.blob, this.processBuffer.bind(this))
+            const buffer = toBuffer(this.blob, this.processBuffer.bind(this));
         } else {
-            console.log("this.state.fileToSend is undefined")
+            console.log("this.state.fileToSend is undefined");
         }
     }
-
-
-
 
     public capture(): Promise<Blob> {
         const video = document.querySelector("video");
@@ -92,7 +89,7 @@ export class Camera extends React.Component<CameraProps, CameraState> {
                 return new Promise<Blob>((resolve, reject) => {
                     canvas.toBlob((blob) => {
                         if (blob) {
-                            this.blob = blob
+                            this.blob = blob;
                             resolve(blob);
                         } else {
                             reject("Failed to get blob from camera canvas");
@@ -106,31 +103,33 @@ export class Camera extends React.Component<CameraProps, CameraState> {
     }
 
     private async processBuffer(error: Error, buffer: Buffer) {
-        if (error) throw error;
-        console.log('Buffer : ')
+        if (error) { throw error; }
+        console.log("Buffer: ");
         console.log(buffer);
 
-        var encrypted = encrypt(buffer)
+        const encrypted = encrypt(buffer);
         console.log(decrypt(encrypted));
 
-        var abc = crypto.createHash('sha256').update(encrypted).digest('hex');
-        console.log(abc)
+        const abc = crypto.createHash("sha256").update(encrypted).digest();
+        const sign = crypto.createSign("SHA256");
+        sign.update(encrypted);
+        sign.sign();
+        console.log(abc);
 
-        //send abc to ipfs
-        let hash = await this.ipfs.files.add(encrypted)
-        this.setState({ fileHash: hash })
+        // send abc to ipfs
+        const hash = await this.ipfs.files.add(encrypted);
+        this.setState({ fileHash: hash });
     }
 }
 
-
 function encrypt(buffer: Buffer) {
-    var cipher = crypto.createCipher(algorithm, password)
-    var crypted = Buffer.concat([cipher.update(buffer), cipher.final()]);
+    const cipher = crypto.createCipher(algorithm, password);
+    const crypted = Buffer.concat([cipher.update(buffer), cipher.final()]);
     return crypted;
 }
 
 function decrypt(buffer: Buffer) {
-    var decipher = crypto.createDecipher(algorithm, password)
-    var dec = Buffer.concat([decipher.update(buffer), decipher.final()]);
+    const decipher = crypto.createDecipher(algorithm, password);
+    const dec = Buffer.concat([decipher.update(buffer), decipher.final()]);
     return dec;
 }

@@ -4,7 +4,8 @@ import { Nfc, NFCMessage } from "./nfc";
 
 // tslint:disable:interface-name no-empty-interface
 interface VerifyProps {
-    ipfsId?: string;
+    ipfs: Ipfs;
+    nfc: Nfc;
 }
 interface VerifyState {
     nfc: string[];
@@ -12,41 +13,24 @@ interface VerifyState {
 // tslint:enable:interface-name no-empty-interface
 
 export class Verify extends React.Component<VerifyProps, VerifyState> {
-
     public nfc?: Nfc;
+    public ipfs: Ipfs;
+
     constructor(props: VerifyProps) {
         super(props);
-        const nav: any = navigator;
-        this.nfc = nav.nfc;
+        this.nfc = this.props.nfc;
         this.state = { nfc: [] };
-    }
-
-    public componentWillReceiveProps() {
-        if (this.nfc) {
-            this.nfc.cancelPush();
-        }
-    }
-
-    public shouldComponentUpdate(): boolean {
-        if (this.nfc && this.props.ipfsId) {
-            this.nfc.push(this.props.ipfsId);
-        }
-        return true;
     }
 
     public componentWillMount() {
         if (this.nfc) {
             this.nfc.watch(this.nfcWatch.bind(this), { recordType: "text" });
-            if (this.props.ipfsId) {
-                this.nfc.push(this.props.ipfsId);
-            }
         }
     }
 
     public componentWillUnmount() {
         if (this.nfc) {
             this.nfc.cancelWatch();
-            this.nfc.cancelPush();
         }
     }
 

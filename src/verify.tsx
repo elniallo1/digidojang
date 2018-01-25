@@ -9,8 +9,12 @@ interface VerifyProps {
 }
 interface VerifyState {
     nfc: string[];
+    displayImage?: string;
 }
 // tslint:enable:interface-name no-empty-interface
+import * as crypto from "crypto";
+const algorithm = "aes-256-ctr";
+const password = "d6F3Efeq";
 
 export class Verify extends React.Component<VerifyProps, VerifyState> {
     public nfc?: Nfc;
@@ -19,7 +23,8 @@ export class Verify extends React.Component<VerifyProps, VerifyState> {
     constructor(props: VerifyProps) {
         super(props);
         this.nfc = this.props.nfc;
-        this.state = { nfc: [] };
+        this.ipfs = this.props.ipfs
+        this.state = { nfc: [], displayImage: "" };
     }
 
     public componentWillMount() {
@@ -39,6 +44,10 @@ export class Verify extends React.Component<VerifyProps, VerifyState> {
             <div>
                 {this.renderNfcReady()}
                 {this.renderNfcStrings()}
+                {this.state.displayImage != "" ?
+                    <img src={"data:image/png;base64," + this.state.displayImage} alt="Red dot" /> : <br />
+                }
+
             </div>
         );
     }
@@ -59,16 +68,57 @@ export class Verify extends React.Component<VerifyProps, VerifyState> {
         );
     }
 
+    private renderDocument() {
+        return (
+            <ol>
+                {this.state.nfc.map((s) => (<li>{s}</li>))}
+            </ol>
+        );
+    }
+
     private nfcWatch(message: NFCMessage<any>) {
         const strings: string[] = [];
         for (const record of message.records) {
             if (record.recordType === "text") {
-                strings.push(record.data);
+                const hash = record.data
+                if (hash.charAt(0) == "Q" && hash.length > 20) {
+                    console.log("Hash is sending to the ipfs : " + hash)
+                    this.ipfs.files.get(hash, this.file.bind(this))
+                }
             }
         }
         this.setState({ nfc: strings });
     }
 
+    private file(error: Error, result?: Ipfs.IPFSFile[]) {
+        if (result != undefined && result.length > 0) {
+            console.log(result)
+
+            console.log(result[0].content)
+
+            let x: any = result[0].content
+            let decryptedBuffer = decrypt(x);
+            console.log(decryptedBuffer)
+
+
+            let str = decryptedBuffer.toString('base64')
+
+            console.log(str)
+
+            this.setState({
+                displayImage: str
+            })
+        }
+    }
+
+
+
     private nfcWrite() {
     }
+}
+
+function decrypt(buffer: Buffer) {
+    const decipher = crypto.createDecipher(algorithm, password);
+    const dec = Buffer.concat([decipher.update(buffer), decipher.final()]);
+    return dec;
 }

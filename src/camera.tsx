@@ -109,14 +109,19 @@ export class Camera extends React.Component<CameraProps, CameraState> {
         console.log(buffer);
 
         const encrypted = encrypt(buffer);
+        console.log("Encrypt and decrypt : ");
+        console.log(encrypted.buffer);
         console.log(decrypt(encrypted));
 
         const abc = crypto.createHash("sha256").update(encrypted).digest();
+        console.log("Hash : ");
         console.log(abc);
 
         // send abc to ipfs
         const hash = await this.ipfs.files.add(encrypted);
         this.setState({ fileHash: hash });
+
+        this.props.nfc.push(hash[0].hash)
     }
 }
 

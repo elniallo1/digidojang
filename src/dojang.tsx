@@ -2,6 +2,7 @@ import * as Ipfs from "ipfs";
 import * as React from "react";
 import { Camera } from "./camera";
 import { Verify } from "./verify";
+import { Nfc } from "./nfc";
 
 // tslint:disable:interface-name no-empty-interface
 interface DojangProps { }
@@ -13,10 +14,13 @@ interface DojangState {
 
 export class Dojang extends React.Component<DojangProps, DojangState> {
     public ipfs: Ipfs;
+    public nfc: Nfc
 
     constructor(props: DojangProps) {
         super(props);
         this.state = { files: [] };
+        const nav: any = navigator
+        this.nfc = nav.nfc
     }
 
     public componentWillMount() {
@@ -30,8 +34,8 @@ export class Dojang extends React.Component<DojangProps, DojangState> {
                 <h1>Test</h1>
                 {this.state.id === undefined ? <div>Connecting...</div> : <div>IPFS ID: {this.state.id}</div>}
                 {this.state.files.map((file) => <div>File Hash: {file.hash}</div>)}
-                <Camera ipfs={this.ipfs} />
-                <Verify ipfs={this.ipfs} />
+                <Camera ipfs={this.ipfs} nfc={this.nfc} />
+                <Verify ipfs={this.ipfs} nfc={this.nfc} />
             </div>
         );
 

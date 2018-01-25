@@ -2,7 +2,7 @@ import * as Ipfs from "ipfs";
 import * as React from "react";
 
 // tslint:disable:interface-name no-empty-interface
-interface CameraProps { ipfs: Ipfs; }
+interface CameraProps { ipfs: Ipfs; nfc: Nfc; }
 interface CameraState {
     cameraUrl?: string;
     fileHash: Ipfs.IPFSFile[];
@@ -12,6 +12,7 @@ interface CameraState {
 const toBuffer = require("blob-to-buffer");
 const crypto2 = require("crypto-browserify");
 import * as crypto from "crypto";
+import { Nfc } from "./nfc";
 
 const algorithm = "aes-256-ctr";
 const password = "d6F3Efeq";
@@ -111,9 +112,6 @@ export class Camera extends React.Component<CameraProps, CameraState> {
         console.log(decrypt(encrypted));
 
         const abc = crypto.createHash("sha256").update(encrypted).digest();
-        const sign = crypto.createSign("SHA256");
-        sign.update(encrypted);
-        sign.sign();
         console.log(abc);
 
         // send abc to ipfs

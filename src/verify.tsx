@@ -70,6 +70,5 @@ export class Verify extends React.Component<VerifyProps, VerifyState> {
     }
 
     private nfcWrite() {
-        console.log(`Wrote '${this.props.ipfsId}' to tag`);
     }
 }

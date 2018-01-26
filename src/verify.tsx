@@ -1,6 +1,9 @@
 import * as Ipfs from "ipfs";
 import * as React from "react";
 import { Nfc, NFCMessage } from "./nfc";
+import CircularProgress from 'material-ui/Progress/CircularProgress';
+
+import "./dojang.css"
 
 // tslint:disable:interface-name no-empty-interface
 interface VerifyProps {
@@ -10,6 +13,7 @@ interface VerifyProps {
 interface VerifyState {
     nfc: string[];
     displayImage?: string;
+    isLoading: boolean;
 }
 // tslint:enable:interface-name no-empty-interface
 import * as crypto from "crypto";
@@ -24,7 +28,7 @@ export class Verify extends React.Component<VerifyProps, VerifyState> {
         super(props);
         this.nfc = this.props.nfc;
         this.ipfs = this.props.ipfs
-        this.state = { nfc: [], displayImage: "" };
+        this.state = { nfc: [], displayImage: "", isLoading: false };
     }
 
     public componentWillMount() {
@@ -44,6 +48,8 @@ export class Verify extends React.Component<VerifyProps, VerifyState> {
             <div>
                 {this.renderNfcReady()}
                 {this.renderNfcStrings()}
+                {this.state.isLoading ? <CircularProgress className="circularBar" size={50} thickness={2} /> :
+                    <br />}
                 {this.state.displayImage != "" ?
                     <img src={"data:image/png;base64," + this.state.displayImage} alt="Red dot" /> : <br />
                 }
@@ -83,6 +89,9 @@ export class Verify extends React.Component<VerifyProps, VerifyState> {
                 const hash = record.data
                 if (hash.charAt(0) == "Q" && hash.length > 20) {
                     console.log("Hash is sending to the ipfs : " + hash)
+                    this.setState({
+                        isLoading: true
+                    })
                     this.ipfs.files.get(hash, this.file.bind(this))
                 }
             }
@@ -103,7 +112,11 @@ export class Verify extends React.Component<VerifyProps, VerifyState> {
 
             let str = decryptedBuffer.toString('base64')
 
-            console.log(str)
+            //console.log(str)
+
+            this.setState({
+                isLoading: false
+            })
 
             this.setState({
                 displayImage: str

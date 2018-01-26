@@ -1,11 +1,16 @@
 import * as Ipfs from "ipfs";
 import * as React from "react";
+import CircularProgress from 'material-ui/Progress/CircularProgress';
+import RaisedButton from 'material-ui/Button'
+import "./dojang.css"
 
-// tslint:disable:interface-name no-empty-interface
+// tslint:disable:interface-name  no-empty-interface
 interface CameraProps { ipfs: Ipfs; nfc: Nfc; }
 interface CameraState {
     cameraUrl?: string;
     fileHash: Ipfs.IPFSFile[];
+    isLoading: boolean;
+    isUploading: boolean;
 }
 // tslint:enable:interface-name no-empty-interface
 
@@ -25,7 +30,7 @@ export class Camera extends React.Component<CameraProps, CameraState> {
     constructor(props: CameraProps) {
         super(props);
         this.ipfs = props.ipfs;
-        this.state = { fileHash: [] };
+        this.state = { fileHash: [], isLoading: false, isUploading: false };
         this.mediaRequested = false;
     }
 
@@ -58,8 +63,9 @@ export class Camera extends React.Component<CameraProps, CameraState> {
                 <video src={this.state.cameraUrl} autoPlay />
                 <canvas></canvas>
                 <br />
-                <button onClick={this.capture.bind(this)}>Capture</button>
-                <button onClick={this.send.bind(this)}>Send</button>
+                <RaisedButton onClick={this.capture.bind(this)} className="buttonTake" >Capture</RaisedButton>
+                {this.state.isLoading && this.state.isUploading ? <CircularProgress className="circularBar" size={50} thickness={2} /> :
+                    <RaisedButton onClick={this.send.bind(this)} className="buttonSend">Send</RaisedButton>}
                 <ol>
                     {this.state.fileHash.map((f) => <li>{f.hash}</li>)}
                 </ol>
@@ -71,7 +77,9 @@ export class Camera extends React.Component<CameraProps, CameraState> {
     public send() {
         if (this.blob !== undefined) {
             console.log("rblob defined");
-
+            this.setState({
+                isLoading: true
+            })
             const buffer = toBuffer(this.blob, this.processBuffer.bind(this));
         } else {
             console.log("this.state.fileToSend is undefined");
@@ -95,7 +103,7 @@ export class Camera extends React.Component<CameraProps, CameraState> {
                         } else {
                             reject("Failed to get blob from camera canvas");
                         }
-                    }, "image/png", 0.97);
+                    }, "image/png", 1.0);
                 });
             }
             return Promise.reject("Could not get canvas context");
@@ -119,11 +127,24 @@ export class Camera extends React.Component<CameraProps, CameraState> {
 
         // send abc to ipfs
         const hash = await this.ipfs.files.add(encrypted);
-        this.setState({ fileHash: hash });
+        this.setState({ fileHash: hash, isLoading: true, isUploading: true });
+        console.log(`http://dojang.glosfer.com:8080/ipfs/${hash[0].hash}`)
+        fetch(`https://ipfs.io/ipfs/${hash[0].hash}`).then(this.startFetch.bind(this));
+        this.props.nfc.push(hash[0].hash).then(() => {
+            this.setState({
+                isLoading: false
+            })
+        }
+        )
 
-        this.props.nfc.push(hash[0].hash)
+    }
+
+    private startFetch() {
+        this.setState({ isUploading: false })
     }
 }
+
+
 
 function encrypt(buffer: Buffer) {
     const cipher = crypto.createCipher(algorithm, password);

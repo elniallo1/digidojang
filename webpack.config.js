@@ -27,7 +27,9 @@ module.exports = {
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
             { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
             { test: /\.js$/, loaders: [/*'react-hot-loader', */'babel-loader'], include: path.join(__dirname, 'src') },
-            { test: /\.json$/, loader: 'json-loader' }
+            { test: /\.json$/, loader: 'json-loader' },
+            { test: /\.css$/, use: ExtractTextPlugin.extract({ fallback: "style-loader", use: "css-loader" }) },
+
         ]
     },
 
@@ -51,6 +53,6 @@ module.exports = {
         // new UglifyJsPlugin(),
         // new HtmlWebpackPlugin({ title: "디지도장", inject: "head" }),
         // new CDNWebpackPlugin(config.build.cdn),
-        // new ExtractTextPlugin("styles.css")
+        new ExtractTextPlugin("styles.css")
     ]
 };

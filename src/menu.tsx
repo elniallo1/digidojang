@@ -4,6 +4,8 @@ import { Camera } from "./camera";
 import { Verify } from "./verify";
 import { Nfc } from "./nfc";
 
+import "./dojang.css"
+
 
 
 export class Menu extends React.Component<any, any> {
@@ -12,7 +14,7 @@ export class Menu extends React.Component<any, any> {
 
     constructor(props: any) {
         super(props);
-        this.state = { files: [], choiceGet: false, choiceSend: false };
+        this.state = { files: [], choiceGet: false, choiceSend: false, enabledNFC: false };
         const nav: any = navigator
         this.nfc = nav.nfc
     }
@@ -28,8 +30,8 @@ export class Menu extends React.Component<any, any> {
                 <h1>Menu</h1>
                 <div>
                     {this.state.id === undefined ? <div>Connecting...</div> : <div>IPFS ID: {this.state.id}</div>}
-                    <button onClick={this.goToSend.bind(this)}>Save document</button>
-                    <button onClick={this.goToGet.bind(this)}>Get document</button>
+                    <button className="buttonTake" onClick={this.goToSend.bind(this)} disabled={this.nfc === undefined}>Save document</button>
+                    <button className="buttonTake" onClick={this.goToGet.bind(this)} disabled={this.nfc === undefined}>Get document</button>
                     <br />
                     {this.renderNfcReady()}
                 </div>
